@@ -24,7 +24,7 @@ jobs:
          # fix npm login configuration 
          npm config fix
          # Build the project using JFrog CLI
-         jfrog rt npmi
+         npm install
      - name: Failure check
        run: |
          echo "JFROG_BUILD_STATUS=FAIL" >> $GITHUB_ENV
