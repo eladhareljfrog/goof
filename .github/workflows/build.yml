@@ -21,6 +21,8 @@ jobs:
        run: |
          # Configure the project
          jfrog rt npm-config --server-id-resolve jfrog-instance --repo-resolve doneladio-npm
+         # fix npm login configuration 
+         npm config fix
          # Build the project using JFrog CLI
          jfrog rt npmi
      - name: Failure check
