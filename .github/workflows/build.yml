@@ -8,10 +8,6 @@ jobs:
      JF_ARTIFACTORY_1: ${{ secrets.JF_ARTIFACTORY_SECRET_1 }}
      JFROG_BUILD_STATUS: PASS
    steps:
-     - name: Use .npmrc
-       uses: bduff9/use-npmrc@v1.2
-       with:
-         dot-npmrc: ${{ secrets.DOT_NPMRC }}
      - name: Checkout
        uses: actions/checkout@v2
      - name: Setup JFrog CLI
@@ -25,8 +21,6 @@ jobs:
        run: |
          # Configure the project
          jfrog rt npm-config --server-id-resolve jfrog-instance --repo-resolve doneladio-npm
-         # fix npm login configuration 
-         npm config fix
          # Build the project using JFrog CLI
          jfrog rt npmi
      - name: Failure check
