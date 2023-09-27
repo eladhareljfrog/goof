@@ -20,7 +20,7 @@ jobs:
      - name: Build
        run: |
          # Configure the project
-         # jfrog rt npm-config --server-id-resolve jfrog-instance --repo-resolve doneladio-npm
+         jf npm-config --repo-resolve repo-2709-npm --repo-deploy repo-2709-npm
          # Build the project using JFrog CLI
          jf npm install
      - name: Failure check
