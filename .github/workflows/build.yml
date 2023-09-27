@@ -20,9 +20,9 @@ jobs:
      - name: Build
        run: |
          # Configure the project
-         jfrog rt npm-config --server-id-resolve jfrog-instance --repo-resolve doneladio-npm
+         # jfrog rt npm-config --server-id-resolve jfrog-instance --repo-resolve doneladio-npm
          # Build the project using JFrog CLI
-         jfrog rt npmi
+         jfrog npm install
      - name: Failure check
        run: |
          echo "JFROG_BUILD_STATUS=FAIL" >> $GITHUB_ENV
