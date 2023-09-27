@@ -8,6 +8,10 @@ jobs:
      JF_ARTIFACTORY_1: ${{ secrets.JF_ARTIFACTORY_SECRET_1 }}
      JFROG_BUILD_STATUS: PASS
    steps:
+     - name: Use .npmrc
+       uses: bduff9/use-npmrc@v1.2
+       with:
+         dot-npmrc: ${{ secrets.DOT_NPMRC }}
      - name: Checkout
        uses: actions/checkout@v2
      - name: Setup JFrog CLI
