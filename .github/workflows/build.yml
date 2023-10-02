@@ -52,4 +52,4 @@ jobs:
           npm install
           npm i -g snyk
           snyk auth ${{ secrets.SNYK_TOKEN }}
-          snyk monitor
+          snyk monitor --target-reference=gh-actions
