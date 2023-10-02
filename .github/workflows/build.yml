@@ -1,35 +1,54 @@
-
 name: 'JFrog CI Integration'
 on: [push]
 jobs:
- jfrog-ci-integration:
-   runs-on: ubuntu-latest
-   steps:
-     - name: Checkout
-       uses: actions/checkout@v2
-     - name: Setup JFrog CLI
-       uses: jfrog/setup-jfrog-cli@v3
-       env: 
-         JF_URL: ${{ secrets.JF_URL }}
-         JF_ACCESS_TOKEN: ${{ secrets.JF_ARTIFACTORY_SECRET_1 }}
-     - name: Build
-       run: |
-         # Configure the project
-         jf npm-config --repo-resolve repo-2709-npm --repo-deploy repo-2709-npm
-         # Build the project using JFrog CLI
-         jf npm install
-     - name: Failure check
-       run: |
-         echo "JFROG_BUILD_STATUS=FAIL" >> $GITHUB_ENV
-       if: failure()
-     - name: Publish build
-       run: |
-         # Collect and store environment variables in the build-info
-         jf rt bce
-         # Collect and store VCS details in the build-info
-         jf rt bag
-         # Publish the build-info to Artifactory
-         jf rt bp
-         # Scan the published build-info with Xray
-         jf rt bs
-       if: always()
+  jfrog-ci-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup JFrog CLI
+        uses: jfrog/setup-jfrog-cli@v3
+        env:
+          JF_URL: ${{ secrets.JF_URL }}
+          JF_ACCESS_TOKEN: ${{ secrets.JF_ARTIFACTORY_SECRET_1 }}
+      - name: Build
+        run: |
+          # Configure the project
+          jf npm-config --repo-resolve repo-2709-npm --repo-deploy repo-2709-npm
+          # Build the project using JFrog CLI
+          jf npm install
+      - name: Failure check
+        run: |
+          echo "JFROG_BUILD_STATUS=FAIL" >> $GITHUB_ENV
+        if: failure()
+      - name: Publish build
+        run: |
+          # Collect and store environment variables in the build-info
+          jf rt bce
+          # Collect and store VCS details in the build-info
+          jf rt bag
+          # Publish the build-info to Artifactory
+          jf rt bp
+          # Scan the published build-info with Xray
+          jf rt bs
+        if: always()
+
+  # Scan with Snyk
+  snyk-scan:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+    steps:
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies and setup Snyk
+        run: |
+          npm install
+          npm i -g snyk
+          snyk auth ${{ secrets.SNYK_TOKEN }}
+          snyk monitor
